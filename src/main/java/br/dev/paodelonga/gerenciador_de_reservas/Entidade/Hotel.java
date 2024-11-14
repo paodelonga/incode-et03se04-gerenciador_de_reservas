@@ -114,31 +114,37 @@ public class Hotel {
     }
 
     // Adders
-    public Boolean adicionaReserva(Reserva reserva) {
+    public Reserva adicionaReserva(Reserva reserva) {
         if (listaReservas.size() < quantidadeReservaMaxima) {
-            if(!listaReservas.contains(reserva)) {
+            if (!(listaReservas.contains(reserva)) && historicoReservas.contains(reserva)) {
                 historicoReservas.add(reserva);
-                return listaReservas.add(reserva);
+                listaReservas.add(reserva);
+                return listaReservas.get(listaReservas.indexOf(reserva));
             }
         }
-        return false;
+        return null;
     }
 
-    public Boolean adicionaQuarto(Quarto quarto) {
+    public Quarto adicionaQuarto(Quarto quarto) {
         if (listaQuartos.size() < quantidadeReservaMaxima) {
-            return !listaQuartos.contains(quarto) && listaQuartos.add(quarto);
-        }
-        return false;
-    }
-
-    public Boolean adicionaHospede(Hospede hospede) {
-        if (listaHospedes.size() < quantidadeReservaMaxima) {
-            if(!listaHospedes.contains(hospede)) {
-                historicoHospedes.add(hospede);
-                return historicoHospedes.add(hospede);
+            if(!listaQuartos.contains(quarto)) {
+                listaQuartos.add(quarto);
+                return listaQuartos.get(listaQuartos.indexOf(quarto));
             }
         }
-        return false;
+        return null;
+    }
+
+    public Hospede adicionaHospede(Hospede hospede) {
+        if (listaHospedes.size() < quantidadeReservaMaxima) {
+            if (!(listaHospedes.contains(hospede) && historicoHospedes.contains(hospede))) {
+                historicoHospedes.add(hospede);
+                listaHospedes.add(hospede);
+
+                return listaHospedes.get(listaHospedes.indexOf(hospede));
+            }
+        }
+        return null;
     }
 
     public Boolean adicionaQuartoTabela(QuartoNome nome, BigDecimal valor, Integer quantidade_inicial) {
@@ -162,27 +168,43 @@ public class Hotel {
     }
 
     public Map<BigDecimal, Integer> obterQuartoTabela(QuartoNome nome) {
-        return Map.of(tabelaValores.get(nome), tabelaQuartos.get(nome));
+        if(tabelaQuartos.containsKey(nome) && tabelaValores.containsKey(nome)) {
+            return Map.of(tabelaValores.get(nome), tabelaQuartos.get(nome));
+        }
+        return null;
     }
 
     // Removers
-    public Boolean removeReserva(Reserva reserva) {
-        return listaReservas.remove(reserva);
+    public Reserva removeReserva(Reserva reserva) {
+        Reserva removida = listaReservas.get(listaReservas.indexOf(reserva));
+        listaReservas.remove(removida);
+        return removida;
     }
 
-    public Boolean removeQuarto(Quarto quarto) {
-        return listaQuartos.remove(quarto);
+    public Quarto removeQuarto(Quarto quarto) {
+        Quarto removido = listaQuartos.get(listaQuartos.indexOf(quarto));
+        listaQuartos.remove(removido);
+        return removido;
     }
 
-    public Boolean removeHospede(Hospede hospede) {
-        return listaHospedes.remove(hospede);
+    public Hospede removeHospede(Hospede hospede) {
+        Hospede removido = listaHospedes.get(listaHospedes.indexOf(hospede));
+        listaHospedes.remove(hospede);
+        return removido;
     }
 
-    public Boolean removeQuartoTabela(QuartoNome nome) {
-        tabelaQuartos.remove(nome);
-        tabelaValores.remove(nome);
+    public Map<BigDecimal, Integer> removeQuartoTabela(QuartoNome nome) {
+        if (tabelaQuartos.containsKey(nome) && tabelaValores.containsKey(nome)) {
+            Map<BigDecimal, Integer> removido = Map.of(
+                tabelaValores.get(nome), tabelaQuartos.get(nome)
+            );
 
-        return !(tabelaQuartos.containsKey(nome) && tabelaValores.containsKey(nome));
+            tabelaValores.remove(nome);
+            tabelaQuartos.remove(nome);
+
+            return removido;
+        }
+        return null;
     }
 
     // Internals

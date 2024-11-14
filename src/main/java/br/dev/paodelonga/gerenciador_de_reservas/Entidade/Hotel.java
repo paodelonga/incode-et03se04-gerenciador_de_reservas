@@ -147,11 +147,18 @@ public class Hotel {
         return null;
     }
 
-    public Boolean adicionaQuartoTabela(QuartoNome nome, BigDecimal valor, Integer quantidade_inicial) {
-        tabelaQuartos.put(nome, quantidade_inicial);
-        tabelaValores.put(nome, valor);
+    public Map<BigDecimal, Integer> adicionaQuartoTabela(QuartoNome nome, BigDecimal valor, Integer quantidade_inicial) {
+        if(!(tabelaQuartos.containsKey(nome) && tabelaValores.containsKey(nome))) {
+            Map<BigDecimal, Integer> adicionado = Map.of(
+                tabelaValores.get(nome), tabelaQuartos.get(nome)
+            );
 
-        return tabelaQuartos.containsKey(nome) && tabelaValores.containsKey(nome);
+            tabelaValores.put(nome, valor);
+            tabelaQuartos.put(nome, quantidade_inicial);
+
+            return adicionado;
+        }
+        return null;
     }
 
     // Obters

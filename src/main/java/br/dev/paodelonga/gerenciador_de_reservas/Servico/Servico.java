@@ -47,9 +47,7 @@ public class Servico {
     public QuartoNome removerQuartoTabela(QuartoNome nome) {}
 
     // Coisitas externas
-    // Só pra deixar claro, esse aqui é o cara que faz a reserva no "front"
-    public Quarto alugarQuarto(Hospede hospede, Quarto quarto) {
-    }
+    public Reserva alugarQuarto(Hospede hospede, Quarto quarto) {}
 
     public Reserva consultarReserva(Reserva reserva) {
     }

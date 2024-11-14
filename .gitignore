@@ -1,5 +1,11 @@
+# IDEA
+.idea/uiDesigner.xml
+.idea/workspace.xml
+
+
 # IDEA Standard output folder
 out/
+target/
 
 # Compiled class file
 *.class

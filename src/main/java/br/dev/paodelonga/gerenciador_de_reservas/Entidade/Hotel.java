@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
 
 public class Hotel {
     private String nome;
@@ -182,5 +183,21 @@ public class Hotel {
         tabelaValores.remove(nome);
 
         return !(tabelaQuartos.containsKey(nome) && tabelaValores.containsKey(nome));
+    }
+
+    // Internals
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof Hotel other)) return false;
+        return Objects.equals(nome, other.getNome());
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+        return result;
     }
 }

@@ -4,66 +4,223 @@ import br.dev.paodelonga.gerenciador_de_reservas.Entidade.Hospede;
 import br.dev.paodelonga.gerenciador_de_reservas.Entidade.Hotel;
 import br.dev.paodelonga.gerenciador_de_reservas.Entidade.Quarto;
 import br.dev.paodelonga.gerenciador_de_reservas.Entidade.Reserva;
-import br.dev.paodelonga.gerenciador_de_reservas.Tipo.QuartoNome;
+import br.dev.paodelonga.gerenciador_de_reservas.Repositorio.RepositorioHospede;
+import br.dev.paodelonga.gerenciador_de_reservas.Repositorio.RepositorioHotel;
+import br.dev.paodelonga.gerenciador_de_reservas.Repositorio.RepositorioQuarto;
+import br.dev.paodelonga.gerenciador_de_reservas.Repositorio.RepositorioReserva;
+import br.dev.paodelonga.gerenciador_de_reservas.Tipo.QuartoTipo;
 
-import java.math.BigDecimal;
 import java.util.LinkedList;
-import java.util.Map;
+import java.util.List;
 
 public class Servico {
-    Hotel hotel;
+    private RepositorioHospede repositorioHospede;
+    private RepositorioHotel repositorioHotel;
+    private RepositorioQuarto repositorioQuarto;
+    private RepositorioReserva repositorioReserva;
 
-    public Servico(Integer quantidade_maxima_reserva) {
-        Hotel hotel = new Hotel("Lumen", quantidade_maxima_reserva);
+    public Servico() {
+        repositorioHospede = new RepositorioHospede();
+        repositorioHotel = new RepositorioHotel();
+        repositorioQuarto = new RepositorioQuarto();
+        repositorioReserva = new RepositorioReserva();
+
+        iniciar();
     }
 
-    // Coistas internas (eu quero usar mvc :crying :crying
-    public void alterarNomeHotel(String nome) {}
-
-    // Adders
-    public Reserva adicionarReserva(Reserva reserva) {}
-    public Quarto adicionarQuarto(Quarto quarto) {}
-    public Hospede adicionarHospede(Hospede hospede) {}
-    public boolean adicionarQuartoTabela(QuartoNome nome, BigDecimal valor, Integer quantidade) {}
-
-    // Obters
-    public String obterNomeHotel() {}
-    public Reserva obterReserva(Reserva reserva) {}
-    public Quarto obterQuarto(Quarto quarto) {}
-    public Hospede obterHospede(Hospede hospede) {}
-    public Map<BigDecimal, Integer> obterQuartoTabela(QuartoNome nome) {}
-
-    // Listers
-    public LinkedList<Reserva> obterListaReservas() {}
-    public LinkedList<Quarto> obterListaQuartos() {}
-    public LinkedList<Hospede> obterListaHospedes() {}
-    // E agora voce se pergunta: ah, por que não temos um `obterListaQuartosTabela`?
-    // é que... gafanhato, fudeu!
-
-    // Removers
-    public Reserva removerReserva(Reserva reserva) {}
-    public Quarto removerQuarto(Quarto quarto) {}
-    public Hospede removerHospede(Hospede hospede) {}
-    public QuartoNome removerQuartoTabela(QuartoNome nome) {}
-
-    // Coisitas externas
-    public Reserva alugarQuarto(Hospede hospede, Quarto quarto) {}
-
-    public Reserva consultarReserva(Reserva reserva) {
+    // Reserva
+    public LinkedList<Reserva> obterListaDeReservas() {
+        return repositorioReserva.getListaReservas();
     }
 
-    public Reserva cancelarReserva(Reserva reserva) {
+    public Reserva obterReserva(Reserva reserva) {
+        return repositorioReserva.getReserva(reserva);
     }
 
-    public Reserva pagarReserva(Reserva reserva) {
+    public Reserva obterReservaPorIDemHotel(String identificador, String nome_hotel) {
+        return repositorioReserva.getReserva(
+            new Reserva(new Hotel(nome_hotel), identificador)
+        );
     }
 
-    public Reserva fazerCheckIn(Reserva reserva) {
+    public Reserva adicionarReserva(Reserva reserva) {
+        return repositorioReserva.addReserva(reserva);
     }
 
-    public Reserva fazerCheckOut(Reserva reserva) {
+    public Reserva removerReservaPorIDEmHotel(String identificador, String nome_hotel) {
+        return repositorioReserva.removeReserva(
+            new Reserva(new Hotel(nome_hotel), identificador)
+        );
     }
 
-    public LinkedList<Reserva> listarReservas() {
+    public Reserva removerReserva(Reserva reserva) {
+        return repositorioReserva.removeReserva(reserva);
+    }
+
+    // Quarto
+    public LinkedList<Quarto> obterListaDeQuartos() {
+        return repositorioQuarto.getListaQuartos();
+    }
+
+    public Quarto obterQuarto(Quarto quarto) {
+        return repositorioQuarto.getQuarto(quarto);
+    }
+
+    public Quarto obterQuartoPorNumeroEmHotel(Integer numero, String nome_hotel) {
+        return repositorioQuarto.getQuarto(
+            new Quarto(
+                new Hotel(nome_hotel),
+                numero
+            )
+        );
+    }
+
+    public Quarto adicionarQuarto(Quarto quarto) {
+        return repositorioQuarto.addQuarto(quarto);
+    }
+
+    public Quarto removerQuartoPorNumeroEmHotel(Integer numero, String nome_hotel) {
+        return repositorioQuarto.removeQuarto(
+            new Quarto(
+                new Hotel(nome_hotel),
+                numero
+            )
+        );
+    }
+
+    public Quarto removerQuarto(Quarto quarto) {
+        return repositorioQuarto.removeQuarto(quarto);
+    }
+
+    // Hospede
+    public LinkedList<Hospede> obterListaDeHospedes() {
+        return repositorioHospede.getListaHospedes();
+    }
+
+    public Hospede obterHospede(Hospede hospede) {
+        return repositorioHospede.getHospede(hospede);
+    }
+
+    public Hospede obterHospedePorDocumentoEmHotel(String documento, String nome_hotel) {
+        return repositorioHospede.getHospede(
+            new Hospede(
+                new Hotel(nome_hotel),
+                documento
+            )
+        );
+    }
+
+    public Hospede adicionarHospede(Hospede hospede) {
+        return repositorioHospede.addHospede(hospede);
+    }
+
+    public Hospede removerHospedePorDocumentoEmHotel(String documento, String nome_hotel) {
+        return repositorioHospede.removeHospede(
+            new Hospede(
+                new Hotel(nome_hotel),
+                documento
+            )
+        );
+    }
+
+    public Hospede removerHospede(Hospede hospede) {
+        return repositorioHospede.removeHospede(hospede);
+    }
+
+    // Hotel
+    public LinkedList<Hotel> obterListaDeHosteis() {
+        return repositorioHotel.getListaHoteis();
+    }
+
+    public Hotel obterHotel(Hotel hotel) {
+        return repositorioHotel.getHotel(hotel);
+    }
+
+    public Hotel obterHotelPorNome(String nome_hotel) {
+        return repositorioHotel.getHotel(
+            new Hotel(nome_hotel)
+        );
+    }
+
+    public Hotel adicionarHotel(Hotel hotel) {
+        return repositorioHotel.addHotel(hotel);
+    }
+
+    public Hotel removerHotelPorNome(String nome_hotel) {
+        return repositorioHotel.removeHotel(
+            new Hotel(nome_hotel)
+        );
+    }
+
+    public Hotel removerHotel(Hotel hotel) {
+        return repositorioHotel.removeHotel(hotel);
+    }
+
+    public Hotel alterarNomeDeHotel(Hotel hotel, String novo_nome) {
+        return obterHotel(hotel).setNome(novo_nome);
+    }
+
+    public LinkedList<QuartoTipo> obterListaDeTiposDeQuartoEmHotel(String nome_hotel) {
+        return obterHotelPorNome(nome_hotel).getTiposQuarto();
+    }
+
+    public List<QuartoTipo> obterQuartosDisponiveisEmHotel(String nome_hotel) {
+        LinkedList<QuartoTipo> lista_de_quartos = obterListaDeTiposDeQuartoEmHotel(nome_hotel);
+
+        return lista_de_quartos
+            .stream()
+            .filter(
+                quartoTipo -> quartoTipo.getQuantidade() > 0
+            )
+            .toList();
+    }
+
+    public QuartoTipo obterTipoDeQuartoEmHotel(String nome_hotel, QuartoTipo quarto_tipo) {
+        return obterHotelPorNome(nome_hotel).getQuartoTipo(quarto_tipo);
+    }
+
+    public QuartoTipo obterTipoDeQuartoPorNomeEmHotel(String nome_hotel, String nome_quarto) {
+        return obterHotelPorNome(nome_hotel).getQuartoTipo(new QuartoTipo(nome_quarto));
+    }
+
+    public QuartoTipo adicionarTipoDeQuartoEmHotel(String nome_hotel, QuartoTipo quarto_tipo) {
+        return obterHotelPorNome(nome_hotel).addQuartoTipo(quarto_tipo);
+    }
+
+    public QuartoTipo removerTipoDeQuartoEmHotel(String nome_hotel, QuartoTipo quarto_tipo) {
+        return obterHotelPorNome(nome_hotel).removeQuartoTipo(quarto_tipo);
+    }
+
+    public QuartoTipo removerTipoDeQuartoPorNomeEmHotel(String nome_hotel, String nome_quarto) {
+        return obterHotelPorNome(nome_hotel).removeQuartoTipo(new QuartoTipo(nome_quarto));
+    }
+
+    //
+    public Hotel cadastrarHotel(String nome) {
+        return repositorioHotel.addHotel(new Hotel(nome));
+    }
+
+    public void alugarQuarto(Reserva reserva) {
+    }
+
+    public void consultarReserva(Reserva reserva) {
+    }
+
+    public void cancelarReserva(Reserva reserva) {
+    }
+
+    public void pagarReserva(Reserva reserva) {
+    }
+
+    public void fazerCheckin(Reserva reserva) {
+    }
+
+    public void fazerCheckout(Reserva reserva) {
+    }
+
+    public void listarReservas() {
+    }
+
+    public void iniciar() {
     }
 }

@@ -6,16 +6,24 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Reserva {
-    private Integer identificador;
+    private String identificador;
     private Quarto quarto;
     private Hospede hospede;
     private BigDecimal valor;
     private ReservaEstado estadoReserva;
+    private String idHotel;
 
-    public Reserva(Integer identificador, Quarto quarto, Hospede hospede) {
+    public Reserva(Hotel hotel, String identificador) {
+        this.identificador = identificador;
+        this.idHotel = hotel.getNome();
+    }
+
+    public Reserva(Hotel hotel, String identificador, Quarto quarto, Hospede hospede) {
         this.identificador = identificador;
         this.quarto = quarto;
         this.hospede = hospede;
+
+        this.idHotel = hotel.getNome();
 
         this.quarto.setIdHospede(this.hospede.getDocumento());
         this.quarto.setIdReserva(this.identificador);
@@ -27,7 +35,7 @@ public class Reserva {
     }
 
     // Getters
-    public Integer getIdentificador() {
+    public String getIdentificador() {
         return identificador;
     }
 
@@ -47,8 +55,12 @@ public class Reserva {
         return estadoReserva;
     }
 
+    public String getIdHotel() {
+        return idHotel;
+    }
+
     // Setters
-    public Reserva setIdentificador(Integer identificador) {
+    public Reserva setIdentificador(String identificador) {
         this.identificador = identificador;
         return this;
     }
@@ -73,19 +85,24 @@ public class Reserva {
         return this;
     }
 
+    public Reserva setIdHotel(String id_hotel) {
+        idHotel = id_hotel;
+        return this;
+    }
+
     // Internals
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof Reserva other)) return false;
-        return Objects.equals(identificador, other.getIdentificador());
+        return Objects.equals(idHotel, other.getIdHotel()) && Objects.equals(identificador, other.getIdentificador());
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((identificador == null) ? 0 : identificador.hashCode());
+        result = prime * result + ((idHotel == null) ? 0 : idHotel.hashCode()) + ((identificador == null) ? 0 : identificador.hashCode());
         return result;
     }
 }

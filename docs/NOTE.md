@@ -7,7 +7,10 @@ TRIPLO, SUPERIOR, LUXO, SUITE;
 ---
 
 1. Acessar sistema
+Pege dados do hotel
+- nome
 Libera acesso as operações
+
 2. Cadastrar hotel
 Pega dados do hotel
 - nome
@@ -189,7 +192,24 @@ SISTEMA HOTELEIRO DE RESERVAS
 
 ```
 [1] Alugar quarto
-[>] 
+
+[<] Insira a data de Check-In (1970/12/01)
+[<] Insira a data de Check-Out (1970/12/01)
+
+[>] Estes são os quartos disponiveis para este periodo
+
+[>] [1]
+[>] Nome: Simplex
+[>] Valor: R$ 512.00
+
+[>] [2]
+[>] Nome: Luxuous
+[>] Valor: R$ 512.00
+
+[>] [3]
+[>] Nome: Duplex
+[>] Valor: R$ 512.00
+
 ```
 
 ```

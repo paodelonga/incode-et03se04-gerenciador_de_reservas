@@ -1,18 +1,24 @@
 package br.dev.paodelonga.gerenciador_de_reservas.Entidade;
 
-import br.dev.paodelonga.gerenciador_de_reservas.Tipo.QuartoNome;
-
 import java.util.Objects;
 
 public class Quarto  {
     private Integer numero;
-    private QuartoNome nome;
+    private String tipo;
     private String idHospede;
-    private Integer idReserva;
+    private String idReserva;
+    private String idHotel;
 
-    public Quarto(Integer numero, QuartoNome nome) {
+    public Quarto(Hotel hotel, Integer numero) {
         this.numero = numero;
-        this.nome = nome;
+        this.idHotel = hotel.getNome();
+    }
+
+    public Quarto(Hotel hotel, Integer numero, String tipo) {
+        this.numero = numero;
+        this.tipo = tipo;
+
+        this.idHotel = hotel.getNome();
     }
 
     // Getters
@@ -20,16 +26,20 @@ public class Quarto  {
         return numero;
     }
 
-    public QuartoNome getNome() {
-        return nome;
+    public String getTipo() {
+        return tipo;
     }
 
     public String getIdHospede() {
         return idHospede;
     }
 
-    public Integer getIdReserva() {
+    public String getIdReserva() {
         return idReserva;
+    }
+
+    public String getIdHotel() {
+        return idHotel;
     }
 
     // Setters
@@ -38,8 +48,8 @@ public class Quarto  {
         return this;
     }
 
-    public Quarto setNome(QuartoNome nome) {
-        this.nome = nome;
+    public Quarto setTipo(String tipo) {
+        this.tipo = tipo;
         return this;
     }
 
@@ -48,8 +58,13 @@ public class Quarto  {
         return this;
     }
 
-    public Quarto setIdReserva(Integer id_reserva) {
+    public Quarto setIdReserva(String id_reserva) {
         idReserva = id_reserva;
+        return this;
+    }
+
+    public Quarto setIdHotel(String id_hotel) {
+        idHotel = id_hotel;
         return this;
     }
 
@@ -58,14 +73,14 @@ public class Quarto  {
     public boolean equals(Object object) {
         if (this == object) return true;
         if (!(object instanceof Quarto other)) return false;
-        return Objects.equals(numero, other.getNumero());
+        return Objects.equals(idHotel, other.getIdHotel()) && Objects.equals(numero, other.getNumero());
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((numero == null) ? 0 : numero.hashCode());
+        result = prime * result + ((idHotel == null) ? 0 : idHotel.hashCode()) + ((numero == null) ? 0 : numero.hashCode());
         return result;
     }
 }

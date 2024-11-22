@@ -10,6 +10,7 @@ import br.dev.paodelonga.gerenciador_de_reservas.Repositorio.RepositorioQuarto;
 import br.dev.paodelonga.gerenciador_de_reservas.Repositorio.RepositorioReserva;
 import br.dev.paodelonga.gerenciador_de_reservas.Tipo.QuartoTipo;
 
+import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -196,8 +197,8 @@ public class Servico {
     }
 
     //
-    public Hotel cadastrarHotel(String nome) {
-        return repositorioHotel.addHotel(new Hotel(nome));
+    public Hotel cadastrarHotel(Hotel hotel) {
+        return repositorioHotel.addHotel(hotel);
     }
 
     public void alugarQuarto(Reserva reserva) {
@@ -222,5 +223,20 @@ public class Servico {
     }
 
     public void iniciar() {
+        cadastrarHotel(new Hotel("Teste"));
+
+        adicionarTipoDeQuartoEmHotel("teste", new QuartoTipo(
+                "Luxous",
+                BigDecimal.valueOf(240.00),
+                1
+            )
+        );
+
+        adicionarTipoDeQuartoEmHotel("teste", new QuartoTipo(
+                "Simplex",
+                BigDecimal.valueOf(120),
+                4
+            )
+        );
     }
 }

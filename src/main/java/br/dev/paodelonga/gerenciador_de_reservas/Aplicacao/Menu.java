@@ -1,6 +1,9 @@
 package br.dev.paodelonga.gerenciador_de_reservas.Aplicacao;
 
+import br.dev.paodelonga.gerenciador_de_reservas.Entidade.Hospede;
 import br.dev.paodelonga.gerenciador_de_reservas.Entidade.Hotel;
+import br.dev.paodelonga.gerenciador_de_reservas.Entidade.Quarto;
+import br.dev.paodelonga.gerenciador_de_reservas.Entidade.Reserva;
 import br.dev.paodelonga.gerenciador_de_reservas.Servico.Servico;
 import br.dev.paodelonga.gerenciador_de_reservas.Tipo.QuartoTipo;
 import br.dev.paodelonga.gerenciador_de_reservas.Utilidade.Leitura;
@@ -10,6 +13,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class Menu {
     private Servico servico;
@@ -32,47 +39,111 @@ public class Menu {
     }
 
     private void alugarQuarto(String nome_hotel) {
-        /*
-        [<] Insira a data de Check-In (1970/12/01)
-        [<] Insira a data de Check-Out (1970/12/01)
-
-        [>] Estes são os quartos disponiveis para este periodo
-
-        [>] [1]
-        [>] Nome: Simplex
-        [>] Valor: R$ 512.00
-
-        [>] [2]
-        [>] Nome: Luxuous
-        [>] Valor: R$ 512.00
-
-        [>] [3]
-        [>] Nome: Duplex
-        [>] Valor: R$ 512.00
-        */
-
-        while (true) {
-            try {
-                LocalDate dataCheckIn = LocalDate.parse(
-                    Leitura.lerString("[<] Insira a data de Check-In (1970/12/31)"),
-                    DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-                break;
-            } catch (DateTimeParseException e) {
-                System.out.println("Formato invalido\n");
-            }
-        }
+        LocalDate dataCheckIn;
+        LocalDate dataCheckOut;
+        QuartoTipo quartoTipo;
+        int numeroQuarto;
 
 
         while (true) {
             try {
-                LocalDate dataCheckOut = LocalDate.parse(
-                    Leitura.lerString("[<] Insira a data de Check-Out (1970/12/31)"),
+                dataCheckIn = LocalDate.parse(
+                    Leitura.lerString("[<] Insira a data de Check-In (1970/12/31): "),
                     DateTimeFormatter.ofPattern("yyyy/MM/dd"));
                 break;
             } catch (DateTimeParseException e) {
-                System.out.println("Formato invalido\n");
+                System.out.println("[!] Data em formato invalido\n");
             }
         }
+
+        while (true) {
+            try {
+                dataCheckOut = LocalDate.parse(
+                    Leitura.lerString("[<] Insira a data de Check-Out (1970/12/31): "),
+                    DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+                break;
+            } catch (DateTimeParseException e) {
+                System.out.println("[!] Data em formato invalido\n");
+            }
+        }
+        exibirEspacamento();
+
+        System.out.println("[>] Estes são os quartos disponíveis para este período.");
+
+        List<QuartoTipo> listaQuartosDisponiveis = servico.obterQuartosDisponiveisEmHotel(nome_hotel);
+        listaQuartosDisponiveis.forEach(
+            quarto -> {
+                System.out.printf("[%s] Nome: %s | Valor: R$ %.2f%n",
+                    listaQuartosDisponiveis.indexOf(quarto),
+                    quarto.getNome(),
+                    quarto.getValor()
+                );
+            }
+        );
+
+        exibirEspacamento();
+
+        while (true) {
+            numeroQuarto = Leitura.lerInteiro("[<] Escolha o quarto pelo número: ");
+
+            if (servico.obterQuartosDisponiveisEmHotel(nome_hotel).get(numeroQuarto) != null) {
+                quartoTipo = servico.obterQuartosDisponiveisEmHotel(nome_hotel).get(numeroQuarto);
+                break;
+            }
+
+            System.out.println("[!] O número escolhido não existe");
+        }
+
+        String nomeHospede = Leitura.lerString("[<] Insira o nome do hospede");
+        String documentoHospede = Leitura.lerString("[<] Insira o documento do hospede (CPF/CNPJ)");
+
+        Quarto quartoReserva = new Quarto(
+            servico.obterHotelPorNome(nome_hotel),
+            (
+                servico.obterTipoDeQuartoEmHotel(
+                        nome_hotel,
+                        quartoTipo
+                    )
+                    .getQuantidade() - 1
+            ),
+            nomeQuarto
+        );
+
+        Hospede hospedeReserva = new Hospede(
+            servico.obterHotelPorNome(nome_hotel),
+            nomeHospede,
+            documentoHospede
+        );
+
+        Reserva reserva = new Reserva(
+            servico.obterHotelPorNome(nome_hotel),
+            UUID.randomUUID().toString().split("-")[1],
+            quartoReserva, hospedeReserva
+        );
+
+        System.out.printf("""
+                [>] [Reserva]
+                [>] Identificador: %s
+                [>] Data CheckIn: %s
+                [>] Data CheckOut: %s
+                
+                [>] [Quarto]
+                [>] Nome: %s
+                [>] Valor: %s
+                
+                [>] [Hospede]
+                [>] Nome: %s
+                [>] Documento: %s
+                """,
+            reserva.getIdentificador(), dataCheckIn, dataCheckOut,
+            quartoReserva.getTipo(),
+            servico.obterTipoDeQuartoPorNomeEmHotel(
+                nome_hotel,
+                nomeQuarto
+            ).getValor(),
+            hospedeReserva.getNome(), hospedeReserva.getDocumento()
+        );
+
     }
 
     private void consultarReserva(String nome_hotel) {
@@ -134,41 +205,51 @@ public class Menu {
     private void acessarSistema() {
         exibirSeparador();
 
+        String nomeHotel;
+
         if (servico.obterListaDeHosteis().isEmpty()) {
             System.out.println("[!] Não hoteis cadastrados no sistema.");
             return;
         }
 
-        String nome_hotel = Leitura.lerString("[<] Digite o nome do hotel: ");
+        System.out.println("[0] Voltar\n");
+        while (true) {
+            nomeHotel = Leitura.lerString("[<] Digite o nome do hotel: ");
 
-        if (servico.obterHotelPorNome(nome_hotel) == null) {
-            System.out.println("[!] Hotel não cadastrado.");
-            return;
+            if (nomeHotel.equals("0")) {
+                return;
+            }
+
+            if (servico.obterHotelPorNome(nomeHotel) != null) {
+                break;
+            }
+
+            System.out.println("[!] Hotel não cadastrado.\n");
         }
 
-        exibirOperacoesPrincipais(nome_hotel);
+        exibirOperacoesPrincipais(nomeHotel);
         while (true) {
             switch (Leitura.lerInteiro("[<] Digite o número da operação: ")) {
                 case 1:
-                    alugarQuarto(nome_hotel);
+                    alugarQuarto(nomeHotel);
                     break;
                 case 2:
-                    consultarReserva(nome_hotel);
+                    consultarReserva(nomeHotel);
                     break;
                 case 3:
-                    cancelarReserva(nome_hotel);
+                    cancelarReserva(nomeHotel);
                     break;
                 case 4:
-                    pagarReserva(nome_hotel);
+                    pagarReserva(nomeHotel);
                     break;
                 case 5:
-                    fazerCheckin(nome_hotel);
+                    fazerCheckin(nomeHotel);
                     break;
                 case 6:
-                    fazerCheckout(nome_hotel);
+                    fazerCheckout(nomeHotel);
                     break;
                 case 7:
-                    listarReservas(nome_hotel);
+                    listarReservas(nomeHotel);
                     break;
                 case 8:
                     return;
@@ -179,60 +260,69 @@ public class Menu {
     }
 
     private void cadastrarHotel() {
-        String nome_hotel;
-
         exibirSeparador();
 
-        while (true) {
-            nome_hotel = Leitura.lerString("[<] Digite o nome do hotel: ");
+        String nomeHotel;
+        List<String> listaQuartos;
+        Hotel hotel;
 
-            if (servico.obterHotelPorNome(nome_hotel) == null) {
-                servico.adicionarHotel(new Hotel(nome_hotel));
-                break;
-            } else {
-                System.out.printf("[!] Um hotel de nome %s já existe%n%n", nome_hotel);
+        System.out.println("[0] Voltar\n");
+        while (true) {
+            nomeHotel = Leitura.lerString("[<] Digite o nome do hotel: ");
+
+            if (nomeHotel.equals("0")) {
+                return;
             }
+
+            if (servico.obterHotelPorNome(nomeHotel) == null) {
+                hotel = new Hotel(nomeHotel);
+                break;
+            }
+
+            System.out.println("[!] Um hotel com o mesmo já foi cadastrado.\n");
         }
+
         exibirEspacamento();
+
         System.out.println("""
             [>] Agora vamos criar a tabela de quartos
-            [>] Escreva a lista de quartos separando por virgula
+            [>] Escreva a lista de quartos separadamente por virgula.
             """
         );
 
-        String[] lista_de_quartos = Leitura.lerString(
-            "[<] Lista de quartos (item, dois, tres quarto): "
-        ).split(", ");
-
-        System.out.println("""
-            [>] Agora vamos inserir os valores e quantidades para cada quarto.
-            [>] Para ignorar o quarto preencha qualquer campo com 0
-            """
+        listaQuartos = Arrays.asList(
+            Leitura.lerString(
+                    "[<] Lista de quartos (Ex: Simplex, Duplo, Luxo Casal): "
+                )
+                .split("\\s*,\\s*")
         );
 
-        for (String nome_quarto : lista_de_quartos) {
+
+        System.out.println("[>] Agora vamos inserir os valores e quantidades de cada quarto.\n");
+
+        for (String nome_quarto : listaQuartos) {
             System.out.printf("[%s]%n", nome_quarto);
-            BigDecimal entrada_valor = BigDecimal.valueOf(Leitura.lerFloat("[<] Valor: "));
-            Integer entrada_quantidade = Leitura.lerInteiro("[<] Quantidade: ");
+            BigDecimal entradaValor = BigDecimal.valueOf(Leitura.lerFloat("[<] Valor: "));
+            int entradaQuantidade = Leitura.lerInteiro("[<] Quantidade: ");
 
-            if (!(entrada_valor.equals(BigDecimal.ZERO) || entrada_quantidade.equals(0))) {
-                servico.adicionarTipoDeQuartoEmHotel(
-                    nome_hotel,
+            if (!(entradaValor.intValue() == 0 || entradaQuantidade == 0)) {
+                hotel.addQuartoTipo(
                     new QuartoTipo(
                         nome_quarto,
-                        entrada_valor,
-                        entrada_quantidade
+                        entradaValor,
+                        entradaQuantidade
                     )
                 );
             }
             exibirEspacamento();
         }
 
-        if (servico.obterListaDeTiposDeQuartoEmHotel(nome_hotel).isEmpty()) {
-            System.out.printf("[!] Falha ao cadastrar o hotel %s%n", nome_hotel);
-            System.out.println("[!] Nenhum quarto foi adicionado ao hotel.\n");
+        if (hotel.getTiposQuarto().isEmpty()) {
+            System.out.printf("[!] Falha ao cadastrar o hotel %s%n", nomeHotel);
+            System.out.println("[!] Nenhum quarto foi adicionado ao hotel.");
         } else {
-            System.out.printf("[>] Hotel %s cadastrado com sucesso.%n", nome_hotel);
+            servico.cadastrarHotel(hotel);
+            System.out.printf("[>] Hotel %s cadastrado com sucesso.%n", nomeHotel);
         }
     }
 

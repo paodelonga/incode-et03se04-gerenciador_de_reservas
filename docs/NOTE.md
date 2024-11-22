@@ -1,15 +1,10 @@
-
-
----
-
-TRIPLO, SUPERIOR, LUXO, SUITE;
-
 ---
 
 1. Acessar sistema
 Pege dados do hotel
 - nome
 Libera acesso as operações
+Exibe operações
 
 2. Cadastrar hotel
 Pega dados do hotel
@@ -24,10 +19,10 @@ Pega dados reserva
 - Data Check-Out
 
 Exibe quartos disponiveis
-- exibe tipo, numero, valor
+- exibe tipo, valor
 
 Escolha quarto
-- numero, tipo, valor
+- escolha por nome
 
 Pega dados hospede
 - Nome
@@ -130,44 +125,38 @@ Data atual: 2024/11/13, 19:30
 
 [1] Acessar sistema
 [2] Cadastrar hotel
+[3] Sair
 
-[<] Digite o número da operação 
+[<] Digite o número da operação: 
 ```
 
 ```
 [1] Acessar sistema
-// Exibe operações
+[>] Digite o nome do hotel: 
 ```
 
 ```
 [2] Cadastrar hotel
+[<] Digite o nome do hotel: 
 
-[<] Digite o nome do hotel 
-[<] Insira uma senha de acesso 
+[>] Agora vamos criar a tabela de quartos.
+[>] Escreva a lista de quartos separados por virgula.
 
-Pegar o nome dos tipos de quartos daquele hotel
-Ex: Simplex, Luxo, Duplex
-e pra cada quarto passado pegar o valor e quantidade inicial dele
+[<] Lista de quartos (Ex: Simplex, Duplo, Luxo Casal):  
 
-[>] Agora vamos criar a tabela de quartos
-[>] Escreva a lista de quartos separando por virgula
+[>] Agora vamos inserir os valores e quantidades de cada quarto.
 
-[<] Lista de quartos (item,dois,tres quarto) 
+[Quarto: Simplex]
+   [<] Insira o valor: 
+   [<] Insira a quantidade inicial:    
 
-[>] Agora vamos inserir os valores e quantidades para cada quarto
-[>] Para ignorar o quarto preencha qualquer campo com 0
+[Quarto: Duplo]
+   [<] Insira o valor: 
+   [<] Insira a quantidade inicial:    
 
-[item]
-   [<] Insira o valor 
-   [<] Insira a quantidade inicial   
-
-[dois]
-   [<] Insira o valor 
-   [<] Insira a quantidade inicial   
-
-[tres quarto]
-   [<] Insira o valor 
-   [<] Insira a quantidade inicial   
+[Quarto: Luxo Casal]
+   [<] Insira o valor: 
+   [<] Insira a quantidade inicial:    
 
 [>] Hotel "Nome" cadastrado com sucesso.
 ```
@@ -187,53 +176,169 @@ SISTEMA HOTELEIRO DE RESERVAS
 [6] Fazer CheckOut
 [7] Listar reservas
 
-[<] Digite o número da operação 
+[<] Digite o número da operação: 
 ```
 
 ```
 [1] Alugar quarto
-
-[<] Insira a data de Check-In (1970/12/01)
-[<] Insira a data de Check-Out (1970/12/01)
+[<] Insira a data de Check-In (1970/12/31): 
+[<] Insira a data de Check-Out (1970/12/31):
 
 [>] Estes são os quartos disponiveis para este periodo
+[1] Nome: Simplex | Valor: R$ 512.00
+[2] Nome: Duplo | Valor: R$ 512.00
+[3] Nome: Luxo Casal | Valor: R$ 512.00
 
-[>] [1]
-[>] Nome: Simplex
-[>] Valor: R$ 512.00
+[<] Escolha o quarto pelo número: 
+[<] Insira o nome do hospede: 
+[<] Insira o CPF do hospede:
 
-[>] [2]
-[>] Nome: Luxuous
-[>] Valor: R$ 512.00
+[>] Confirmando dados da reserva
+   [Reserva]
+   Token: abc123
+   Valor: R$ 1024.00
+   Check-In: 1970/12/31
+   Check-Out: 1970/12/31
+   
+   [Hospede]
+   Nome: João Silva
+   Documento: 12345678901
+   
+   [Quarto]
+   Nome: Simplex
+   Numero: 123
 
-[>] [3]
-[>] Nome: Duplex
-[>] Valor: R$ 512.00
-
+[<] Deseja confirmar a reserva? (S/N): 
+[>] Reserva confirmada com sucesso.
 ```
 
 ```
 [2] Consultar reserva
+[<] Insira o token da reserva: 
+[>] Detalhes da reserva abc123:
+   [Reserva]
+   Token: abc123
+   Valor: R$ 1024.00
+   Check-In: 1970/12/31
+   Check-Out: 1970/12/31
+   Estado: Andamento
+   
+   [Hospede]
+   Nome: João Silva
+   Documento: 12345678901
+   
+   [Quarto]
+   Nome: Simplex
+   Numero: 123
 ```
 
 ```
 [3] Cancelar reserva
+[<] Insira o token da reserva: 
+[>] Detalhes da reserva abc123:
+   [Reserva]
+   Token: abc123
+   Valor: R$ 1024.00
+   Check-In: 1970/12/31
+   Check-Out: 1970/12/31
+   Estado: Andamento
+   
+   [Hospede]
+   Nome: João Silva
+   Documento: 12345678901
+   
+   [Quarto]
+   Nome: Simplex
+   Numero: 123
+
+[<] Confirmar o cancelamento? (S/N): 
+[>] Reserva cancelada com sucesso.
 ```
 
 ```
 [4] Pagar reserva
+[<] Insira o token da reserva: 
+[>] Detalhes da reserva abc123:
+   [Reserva]
+   Token: abc123
+   Valor: R$ 1024.00
+   Check-In: 1970/12/31
+   Check-Out: 1970/12/31
+   Estado: Andamento
+   
+   [Hospede]
+   Nome: João Silva
+   Documento: 12345678901
+   
+   [Quarto]
+   Nome: Simplex
+   Numero: 123
+
+[<] Confirmar o pagamento? (S/N): 
+[>] Reserva paga com sucesso.
 ```
 
 ```
 [5] Fazer CheckIn
+[<] Insira o token da reserva: 
+[>] Detalhes da reserva abc123:
+   [Reserva]
+   Token: abc123
+   Valor: R$ 1024.00
+   Check-In: 1970/12/31
+   Check-Out: 1970/12/31
+   Estado: Andamento
+   
+   [Hospede]
+   Nome: João Silva
+   Documento: 12345678901
+   
+   [Quarto]
+   Nome: Simplex
+   Numero: 123
+
+[<] Confirmar o Check-In? (S/N): 
+[>] Check-In realizado com sucesso.
 ```
 
 ```
 [6] Fazer CheckOut
+[<] Insira o token da reserva: 
+[>] Detalhes da reserva abc123:
+   [Reserva]
+   Token: abc123
+   Valor: R$ 1024.00
+   Check-In: 1970/12/31
+   Check-Out: 1970/12/31
+   Estado: Andamento
+   
+   [Hospede]
+   Nome: João Silva
+   Documento: 12345678901
+   
+   [Quarto]
+   Nome: Simplex
+   Numero: 123
+
+[<] Confirmar o Check-Out? (S/N): 
+[>] Check-Out realizado com sucesso.
 ```
 
 ```
 [7] Listar reservas
+[1]
+   Token: abc123
+   Valor: R$ 1024.00
+   Check-In: 1970/12/31
+   Check-Out: 1970/12/31
+   Estado: Andamento
+
+[2]
+   Token: abc123
+   Valor: R$ 1024.00
+   Check-In: 1970/12/31
+   Check-Out: 1970/12/31
+   Estado: Andamento
 ```
 
 ---
